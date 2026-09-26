@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect x=%221%22 y=%224%22 width=%2214%22 height=%228%22 rx=%221%22 fill=%22%23ffc83c%22/%3E%3C/svg%3E">
+<meta name="description" content="All of Me: play along with Martin Gioani's backing track (guitare-improvisation.com) — the original YouTube video with the chord chart, a moving bar marker, click-to-jump, loop and slow-down.">
+<title>All of Me — chord-chart play-along (backing track by Martin Gioani)</title>
+<style>
+:root{--bg:#000;--panel:#0d0d0d;--line:#2a2a2a;--txt:#d8d8d8;--dim:#8a8a8a;--acc:#ffc83c;--loop:#3fa9f5}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--txt);font:14px/1.35 -apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif}
+header{display:flex;align-items:center;gap:12px;padding:6px 12px;border-bottom:1px solid #151515;flex-wrap:wrap}
+header h1{font-size:16px;font-weight:400;margin:0;letter-spacing:.3px}
+header .meta{color:var(--dim);font-size:12px}
+header a{color:var(--dim)}
+.spacer{flex:1}
+.seg{display:inline-flex;border:1px solid #333;border-radius:6px;overflow:hidden}
+.seg button{border:0;border-radius:0;margin:0;background:#111;color:var(--dim);padding:5px 10px}
+.seg button.on{background:#2b2b2b;color:#fff}
+.seg button:disabled{opacity:.35}
+#stage{position:relative;margin:0 auto;width:min(100%, calc((100vh - 300px) * 1.77778));aspect-ratio:1920 / 1080;user-select:none;-webkit-user-select:none}
+#chart{display:block;width:100%;height:100%}
+.cell{position:absolute;cursor:pointer;border-radius:2px}
+.cell:hover{outline:1px solid rgba(255,255,255,.25)}
+#hl{position:absolute;pointer-events:none;background:rgba(255,200,60,.22);border:2px solid rgba(255,200,60,.85);border-radius:3px;box-shadow:0 0 18px rgba(255,200,60,.35);display:none}
+.badge{position:absolute;pointer-events:none;font:bold 11px/1 sans-serif;color:#000;background:var(--loop);padding:2px 4px;border-radius:3px;display:none}
+.loopcell{position:absolute;pointer-events:none;border:1px dashed rgba(63,169,245,.8);border-radius:2px}
+#ctl{flex:1;min-width:0;padding:6px 0 2px}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:4px 0}
+button,select{background:#161616;color:var(--txt);border:1px solid #333;border-radius:5px;padding:5px 9px;font:inherit;cursor:pointer}
+button:hover{border-color:#555}
+button.on{background:#123247;border-color:var(--loop);color:#fff}
+#play{min-width:74px;font-weight:600}
+input[type=range]{accent-color:var(--acc)}
+#seekwrap{position:relative;flex:1;min-width:200px;display:flex;align-items:center}
+#seek{width:100%}
+#loopbar{position:absolute;height:4px;top:50%;margin-top:6px;background:var(--loop);opacity:.8;display:none;pointer-events:none}
+.time{font-variant-numeric:tabular-nums;color:var(--dim);min-width:92px;text-align:right}
+#counter{font-variant-numeric:tabular-nums;color:#fff;min-width:210px}
+.lbl{color:var(--dim);font-size:12px}
+#hint{color:var(--loop);font-size:12px}
+#note{color:#e0a040;font-size:12px}
+#ctlwrap{display:flex;gap:10px;align-items:flex-start;max-width:1400px;margin:0 auto;padding:0 12px}
+#ytbox{flex:none;background:#111;border:1px solid #333;border-radius:6px;padding:4px;margin-top:6px;display:none}
+#ytbox .bar{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--dim);padding:0 2px 3px}
+#ytbox .bar button{padding:0 6px;font-size:11px}
+#ytwrap{width:356px;height:200px;transition:all .2s}
+#ytbox.big #ytwrap{width:480px;height:270px}
+footer{text-align:center;color:#6d6d6d;font-size:11px;padding:6px 0 10px}
+footer a{color:#8d8d8d}
+kbd{border:1px solid #444;border-radius:3px;padding:0 3px;font-size:11px;color:var(--dim)}
+.credit{background:#15120a;border-bottom:1px solid #3a3018;color:#e8d9b0;font-size:13px;padding:5px 12px;text-align:center}
+.credit a{color:#ffc83c} .back{color:#ffc83c!important;text-decoration:none;font-size:13px;border:1px solid #3a3018;border-radius:5px;padding:3px 8px}
+.about{max-width:900px;margin:4px auto 0;color:#7d7d7d;font-size:11px;line-height:1.45}
+</style>
+</head>
+<body>
+<header>
+  <a class="back" href="../../index.html" title="All songs">← All songs</a>
+  <h1>All of Me</h1>
+  <span class="meta" id="meta"></span>
+  <span class="spacer"></span>
+  <span class="lbl">Audio: original YouTube video</span>
+  <span class="seg" id="modeSeg" style="display:none"><button id="mLocal" title="Offline: bundled audio files">Local audio</button><button id="mYT" title="Stream from the original YouTube video (needs internet + http(s) page)">YouTube</button></span>
+</header>
+<div class="credit">Backing tracks and charts by <b>Martin Gioani</b> — <a href="https://www.guitare-improvisation.com" target="_blank" rel="noopener">guitare-improvisation.com</a> (<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener">CC BY-NC-ND</a>) · <a href="https://www.youtube.com/@guitareimprovisation" target="_blank" rel="noopener">YouTube channel</a> · Original video: <a href="https://www.youtube.com/watch?v=ew0zezZ7I4w" target="_blank" rel="noopener">All of Me (180 bpm) - Gypsy jazz Backing track / Jazz manouche</a></div>
+
+<div id="stage">
+  <img id="chart" alt="Chord chart" draggable="false">
+  <div id="cells"></div>
+  <div id="loopcells"></div>
+  <div id="hl"></div>
+  <div class="badge" id="bA">A</div><div class="badge" id="bB">B</div>
+</div>
+
+<div id="ctlwrap">
+<div id="ctl">
+  <div class="row">
+    <button id="play" title="Play / pause (space)">▶ Play</button>
+    <button id="prev" title="Previous bar (←)">⏮</button>
+    <button id="next" title="Next bar (→)">⏭</button>
+    <div id="seekwrap"><input type="range" id="seek" min="0" max="1000" step="1" value="0"><div id="loopbar"></div></div>
+    <span class="time" id="time">0:00 / 0:00</span>
+  </div>
+  <div class="row">
+    <span id="counter">—</span>
+    <span class="spacer"></span>
+    <span class="lbl">Loop</span>
+    <button id="setA" title="Set loop start at current bar ([)">A</button>
+    <button id="setB" title="Set loop end at end of current bar (])">B</button>
+    <button id="loopCells" title="Then click the first and the last cell of the passage">Loop cells…</button>
+    <button id="loopOn" title="Loop on/off (L)">Loop off</button>
+    <button id="loopClr" title="Clear loop">✕</button>
+    <span class="lbl">Speed</span>
+    <select id="speed" title="Pitch is preserved"></select>
+    <span class="lbl">Vol</span>
+    <input type="range" id="vol" min="0" max="100" value="90" style="width:90px">
+    <span class="lbl">Marker lead</span>
+    <input type="range" id="offs" min="-2000" max="500" step="50" value="-1000" style="width:110px" title="How far ahead of the beat the marker moves to the next chord">
+    <span class="lbl" id="offsv" style="min-width:120px">1.0 s before the beat</span>
+    <button id="offsReset" title="Back to the default (1 s before the beat)" style="padding:2px 6px">↺</button>
+  </div>
+  <div class="row"><span id="hint"></span><span id="note"></span><span class="spacer"></span>
+    <span class="lbl"><kbd>space</kbd> play/pause · <kbd>←</kbd><kbd>→</kbd> bar · click a cell = jump to it · <kbd>[</kbd><kbd>]</kbd> A/B · <kbd>L</kbd> loop</span></div>
+</div>
+
+<div id="ytbox"><div class="bar"><span>Original video (YouTube)</span><button id="ytMini" title="Enlarge / shrink">▭</button></div><div id="ytwrap"><div id="yt"></div></div></div>
+</div>
+
+<footer>Backing track and chart by Martin Gioani — <a href="https://www.guitare-improvisation.com" target="_blank" rel="noopener">guitare-improvisation.com</a> (<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener">CC BY-NC-ND 4.0</a>) · <a id="vlink" target="_blank" rel="noopener">original video</a> · <a href="https://www.youtube.com/@guitareimprovisation" target="_blank" rel="noopener">channel</a> · <span id="tsrc"></span><div class="about"><b>About:</b> A free, non-commercial practice tool. It plays the <b>original YouTube videos</b> from Martin Gioani's channel (no audio or video is re-hosted here) next to his <b>original, unmodified</b> chord charts, with a marker that moves to each chord 1 s before it is played. Not affiliated with or endorsed by guitare-improvisation.com; all credit for the backing tracks and charts goes to Martin Gioani. If you like them, subscribe to the channel and visit the website. <a href="../../index.html#about">More</a></div></footer>
+
+<audio id="audio" preload="none"></audio>
+
+<script>
+const SONG = {"title":"All of Me","videoTitle":"All of Me (180 bpm) - Gypsy jazz Backing track / Jazz manouche","videoId":"ew0zezZ7I4w","url":"https://www.youtube.com/watch?v=ew0zezZ7I4w","bpm":180,"key":"","formLabel":"32-bar form","formBars":32,"choruses":6,"duration":311.501,"estimated":false,"defaultOffsetMs":-1000,"screens":[{"image":"chart.png","W":1920,"H":1080,"cells":[[0.27917,0.16296,0.11042,0.09537],[0.38958,0.16296,0.1099,0.09537],[0.49948,0.16296,0.11042,0.09537],[0.6099,0.16296,0.11042,0.09537],[0.27917,0.25833,0.11042,0.09537],[0.38958,0.25833,0.1099,0.09537],[0.49948,0.25833,0.11042,0.09537],[0.6099,0.25833,0.11042,0.09537],[0.27917,0.3537,0.11042,0.09537],[0.38958,0.3537,0.1099,0.09537],[0.49948,0.3537,0.11042,0.09537],[0.6099,0.3537,0.11042,0.09537],[0.27917,0.44907,0.11042,0.0963],[0.38958,0.44907,0.1099,0.0963],[0.49948,0.44907,0.11042,0.0963],[0.6099,0.44907,0.11042,0.0963],[0.27917,0.56481,0.11042,0.09537],[0.38958,0.56481,0.1099,0.09537],[0.49948,0.56481,0.11042,0.09537],[0.6099,0.56481,0.11042,0.09537],[0.27917,0.66019,0.11042,0.09537],[0.38958,0.66019,0.1099,0.09537],[0.49948,0.66019,0.11042,0.09537],[0.6099,0.66019,0.11042,0.09537],[0.27917,0.75556,0.11042,0.09537],[0.38958,0.75556,0.1099,0.09537],[0.49948,0.75556,0.11042,0.09537],[0.6099,0.75556,0.11042,0.09537],[0.27917,0.85093,0.11042,0.0963],[0.38958,0.85093,0.1099,0.0963],[0.49948,0.85093,0.11042,0.0963],[0.6099,0.85093,0.11042,0.0963]]}],"screenTimes":[[0.0,0]],"events":[[0.046,0,30,null,0,1],[4.566,0,-1,null,0,0],[5.906,0,1,null,0,2],[7.241,0,2,null,0,3],[8.576,0,3,null,0,4],[9.912,0,4,null,0,5],[11.223,0,5,null,0,6],[12.57,0,6,null,0,7],[13.917,0,7,null,0,8],[15.241,0,8,null,0,9],[16.564,0,9,null,0,10],[17.899,0,10,null,0,11],[19.246,0,11,null,0,12],[20.558,0,12,null,0,13],[21.905,0,13,null,0,14],[23.228,0,14,null,0,15],[24.575,0,15,null,0,16],[25.922,0,16,null,0,17],[27.257,0,17,null,0,18],[28.569,0,18,null,0,19],[29.904,0,19,null,0,20],[31.251,0,20,null,0,21],[32.586,0,21,null,0,22],[33.921,0,22,null,0,23],[35.256,0,23,null,0,24],[36.591,0,24,null,0,25],[37.926,0,25,null,0,26],[39.25,0,26,null,0,27],[40.562,0,27,null,0,28],[41.885,0,28,null,0,29],[43.221,0,29,null,0,30],[44.556,0,30,null,0,31],[45.891,0,31,null,0,32],[47.226,0,0,null,1,1],[48.573,0,1,null,1,2],[49.908,0,2,null,1,3],[51.243,0,3,null,1,4],[52.567,0,4,null,1,5],[53.89,0,5,null,1,6],[55.237,0,6,null,1,7],[56.56,0,7,null,1,8],[57.919,0,8,null,1,9],[59.242,0,9,null,1,10],[60.566,0,10,null,1,11],[61.913,0,11,null,1,12],[63.225,0,12,null,1,13],[64.571,0,13,null,1,14],[65.895,0,14,null,1,15],[67.23,0,15,null,1,16],[68.565,0,16,null,1,17],[69.889,0,17,null,1,18],[71.224,0,18,null,1,19],[72.559,0,19,null,1,20],[73.883,0,20,null,1,21],[75.229,0,21,null,1,22],[76.564,0,22,null,1,23],[77.9,0,23,null,1,24],[79.235,0,24,null,1,25],[80.57,0,25,null,1,26],[81.905,0,26,null,1,27],[83.229,0,27,null,1,28],[84.564,0,28,null,1,29],[85.899,0,29,null,1,30],[87.234,0,30,null,1,31],[88.569,0,31,null,1,32],[89.916,0,0,null,2,1],[91.239,0,1,null,2,2],[92.575,0,2,null,2,3],[93.91,0,3,null,2,4],[95.245,0,4,null,2,5],[96.557,0,5,null,2,6],[97.904,0,6,null,2,7],[99.25,0,7,null,2,8],[100.574,0,8,null,2,9],[101.897,0,9,null,2,10],[103.233,0,10,null,2,11],[104.579,0,11,null,2,12],[105.891,0,12,null,2,13],[107.238,0,13,null,2,14],[108.562,0,14,null,2,15],[109.908,0,15,null,2,16],[111.255,0,16,null,2,17],[112.59,0,17,null,2,18],[113.914,0,18,null,2,19],[115.237,0,19,null,2,20],[116.584,0,20,null,2,21],[117.919,0,21,null,2,22],[119.254,0,22,null,2,23],[120.589,0,23,null,2,24],[121.925,0,24,null,2,25],[123.26,0,25,null,2,26],[124.583,0,26,null,2,27],[125.895,0,27,null,2,28],[127.219,0,28,null,2,29],[128.554,0,29,null,2,30],[129.889,0,30,null,2,31],[131.224,0,31,null,2,32],[132.559,0,0,null,3,1],[133.906,0,1,null,3,2],[135.241,0,2,null,3,3],[136.576,0,3,null,3,4],[137.9,0,4,null,3,5],[139.223,0,5,null,3,6],[140.57,0,6,null,3,7],[141.894,0,7,null,3,8],[143.252,0,8,null,3,9],[144.576,0,9,null,3,10],[145.899,0,10,null,3,11],[147.246,0,11,null,3,12],[148.558,0,12,null,3,13],[149.905,0,13,null,3,14],[151.228,0,14,null,3,15],[152.563,0,15,null,3,16],[153.898,0,16,null,3,17],[155.222,0,17,null,3,18],[156.557,0,18,null,3,19],[157.892,0,19,null,3,20],[159.216,0,20,null,3,21],[160.563,0,21,null,3,22],[161.898,0,22,null,3,23],[163.233,0,23,null,3,24],[164.568,0,24,null,3,25],[165.903,0,25,null,3,26],[167.238,0,26,null,3,27],[168.562,0,27,null,3,28],[169.897,0,28,null,3,29],[171.232,0,29,null,3,30],[172.567,0,30,null,3,31],[173.902,0,31,null,3,32],[175.249,0,0,null,4,1],[176.573,0,1,null,4,2],[177.908,0,2,null,4,3],[179.243,0,3,null,4,4],[180.578,0,4,null,4,5],[181.89,0,5,null,4,6],[183.237,0,6,null,4,7],[184.584,0,7,null,4,8],[185.907,0,8,null,4,9],[187.231,0,9,null,4,10],[188.566,0,10,null,4,11],[189.913,0,11,null,4,12],[191.225,0,12,null,4,13],[192.571,0,13,null,4,14],[193.895,0,14,null,4,15],[195.242,0,15,null,4,16],[196.588,0,16,null,4,17],[197.924,0,17,null,4,18],[199.247,0,18,null,4,19],[200.571,0,19,null,4,20],[201.917,0,20,null,4,21],[203.252,0,21,null,4,22],[204.588,0,22,null,4,23],[205.923,0,23,null,4,24],[207.258,0,24,null,4,25],[208.593,0,25,null,4,26],[209.917,0,26,null,4,27],[211.229,0,27,null,4,28],[212.552,0,28,null,4,29],[213.887,0,29,null,4,30],[215.222,0,30,null,4,31],[216.558,0,31,null,4,32],[217.893,0,0,null,5,1],[219.239,0,1,null,5,2],[220.575,0,2,null,5,3],[221.91,0,3,null,5,4],[223.233,0,4,null,5,5],[224.557,0,5,null,5,6],[225.904,0,6,null,5,7],[227.227,0,7,null,5,8],[228.585,0,8,null,5,9],[229.909,0,9,null,5,10],[231.233,0,10,null,5,11],[232.579,0,11,null,5,12],[233.891,0,12,null,5,13],[235.238,0,13,null,5,14],[236.562,0,14,null,5,15],[237.897,0,15,null,5,16],[239.232,0,16,null,5,17],[240.555,0,17,null,5,18],[241.89,0,18,null,5,19],[243.226,0,19,null,5,20],[244.549,0,20,null,5,21],[245.896,0,21,null,5,22],[247.231,0,22,null,5,23],[248.566,0,23,null,5,24],[249.901,0,24,null,5,25],[251.237,0,25,null,5,26],[252.572,0,26,null,5,27],[253.895,0,27,null,5,28],[255.23,0,28,null,5,29],[256.565,0,29,null,5,30],[257.901,0,30,null,5,31],[259.236,0,31,null,5,32],[260.583,0,0,null,6,1],[261.906,0,1,null,6,2],[263.241,0,2,null,6,3],[264.576,0,3,null,6,4],[265.912,0,4,null,6,5],[267.223,0,5,null,6,6],[268.57,0,6,null,6,7],[269.917,0,7,null,6,8],[271.241,0,8,null,6,9],[272.564,0,9,null,6,10],[273.899,0,10,null,6,11],[275.246,0,11,null,6,12],[276.558,0,12,null,6,13],[277.905,0,13,null,6,14],[279.228,0,14,null,6,15],[280.575,0,15,null,6,16],[281.922,0,16,null,6,17],[283.257,0,17,null,6,18],[284.569,0,18,null,6,19],[285.904,0,19,null,6,20],[287.251,0,20,null,6,21],[288.586,0,21,null,6,22],[289.921,0,22,null,6,23],[291.256,0,23,null,6,24],[292.591,0,24,null,6,25],[293.926,0,25,null,6,26],[295.25,0,26,null,6,27],[296.562,0,27,null,6,28],[297.885,0,28,null,6,29],[299.221,0,29,null,6,30],[300.556,0,30,null,6,31],[301.891,0,31,null,6,32],[303.226,0,0,null,7,1],[304.573,0,1,null,7,2],[305.908,0,2,null,7,3],[307.217,0,3,null,7,4],[308.541,0,4,null,7,5],[309.863,0,5,null,7,6],[311.226,0,6,null,7,7]],"audio":[]};
+</script>
+
+<script>
+(function(){
+"use strict";
+const $ = id => document.getElementById(id);
+const E = SONG.events;               // [t, screen, cell, part, chorus, bar]  (times = audio downbeats)
+const times = E.map(e => e[0]);
+const SCR = SONG.screens;            // [{image, cells:[[fx,fy,fw,fh]...]}]
+const ST = SONG.screenTimes;         // [[t, screen]...]
+const nForm = SONG.formBars, nChorus = SONG.choruses;
+$('meta').textContent = [SONG.key && ('Key ' + SONG.key), SONG.bpm && (SONG.bpm + ' bpm'), SONG.formLabel, SCR.length > 1 && (SCR.length + ' chart screens')].filter(Boolean).join(' · ');
+$('vlink').href = SONG.url; $('vlink').textContent = 'original video (' + SONG.videoId + ')';
+$('tsrc').textContent = SONG.estimated ? 'marker timing ESTIMATED from the tempo (the video has no moving highlight)' : 'marker timing tracked from the video, aligned to the audio downbeats';
+const img = $('chart');
+
+// ---------- cells / screens ----------
+const pct = v => (v * 100).toFixed(4) + '%';
+function place(el, r){ el.style.left = pct(r[0]); el.style.top = pct(r[1]); el.style.width = pct(r[2]); el.style.height = pct(r[3]); }
+function partRect(s, c, part){ const r = SCR[s].cells[c]; if (part === 0) return [r[0], r[1], r[2]/2, r[3]]; if (part === 1) return [r[0]+r[2]/2, r[1], r[2]/2, r[3]]; return r; }
+const key = (s, c) => c < 0 ? -1 : s * 1000 + c;
+const hasParts = {};
+E.forEach(e => { if (e[3] !== null && e[2] >= 0) hasParts[key(e[1], e[2])] = true; });
+let curScreen = -1;
+function showScreen(s){
+  if (s === curScreen) return;
+  curScreen = s; img.src = SCR[s].image;
+  const box = $('cells'); box.innerHTML = '';
+  SCR[s].cells.forEach((r, c) => {
+    const d = document.createElement('div'); d.className = 'cell'; place(d, r);
+    d.addEventListener('click', ev => {
+      let part = null;
+      if (hasParts[key(s, c)]) { const b = d.getBoundingClientRect(); part = (ev.clientX - b.left) > b.width/2 ? 1 : 0; }
+      onCellClick(s, c, part, ev);
+    });
+    box.appendChild(d);
+  });
+  drawLoop();
+}
+function screenAt(t){ let s = ST.length ? ST[0][1] : 0; for (const x of ST){ if (x[0] <= t) s = x[1]; else break; } return s; }
+
+// visits: contiguous stay in one cell -> {k, s(creen), c, t0, t1}
+const visits = [];
+E.forEach(e => {
+  const k = key(e[1], e[2]), last = visits[visits.length-1];
+  if (last && last.k === k) return;
+  if (last) last.t1 = e[0];
+  visits.push({k, sc: e[1], c: e[2], t0: e[0], t1: null});
+});
+if (visits.length) visits[visits.length-1].t1 = SONG.duration;
+function idxAt(t){ let lo = 0, hi = times.length - 1, r = -1; while (lo <= hi){ const m = (lo+hi) >> 1; if (times[m] <= t){ r = m; lo = m+1; } else hi = m-1; } return r; }
+function visitAt(t){ let lo = 0, hi = visits.length - 1, r = null; while (lo <= hi){ const m = (lo+hi) >> 1; if (visits[m].t0 <= t){ r = visits[m]; lo = m+1; } else hi = m-1; } return r; }
+
+// ---------- transports ----------
+const audio = $('audio');
+function setPP(a){ a.preservesPitch = true; a.mozPreservesPitch = true; a.webkitPreservesPitch = true; }
+setPP(audio);
+const local = {
+  name: 'local', ok: null,
+  play(){ return audio.play(); }, pause(){ audio.pause(); },
+  playing(){ return !audio.paused && !audio.ended; },
+  time(){ return audio.currentTime || 0; },
+  seek(t){ audio.currentTime = Math.max(0, t); },
+  dur(){ return isFinite(audio.duration) ? audio.duration : SONG.duration; },
+  rates(){ const r = []; for (let p = 50; p <= 100; p += 5) r.push(p/100); return r; },
+  setRate(r){ setPP(audio); audio.playbackRate = r; audio.defaultPlaybackRate = r; },
+  setVol(v){ audio.volume = v; }
+};
+let pendingSeek = null, ytPlayer = null, ytReady = false, ytPending = null, ytApiLoading = false, ytAnchor = {rep: -1, t: 0, at: 0};
+const yt = {
+  name: 'yt',
+  play(){ ytReady && ytPlayer.playVideo(); }, pause(){ ytReady && ytPlayer.pauseVideo(); },
+  playing(){ return ytReady && ytPlayer.getPlayerState() === 1; },
+  time(){
+    if (!ytReady) return pendingSeek || 0;
+    if (ytPending !== null) return ytPending;
+    const rep = ytPlayer.getCurrentTime() || 0, now = performance.now();
+    if (rep !== ytAnchor.rep){ ytAnchor = {rep, t: rep, at: now}; }
+    if (!yt.playing()) return rep;
+    const est = ytAnchor.t + (now - ytAnchor.at) / 1000 * (ytPlayer.getPlaybackRate() || 1);
+    return Math.min(est, rep + 0.35);
+  },
+  seek(t){
+    t = Math.max(0, t);
+    if (!ytReady){ pendingSeek = t; return; }
+    const st = ytPlayer.getPlayerState();
+    if (st === -1 || st === 5){ ytPending = t; ytPlayer.cueVideoById({videoId: SONG.videoId, startSeconds: t}); }
+    else { ytPlayer.seekTo(t, true); ytPending = null; }
+    ytAnchor = {rep: -1, t, at: performance.now()};
+  },
+  dur(){ return (ytReady && ytPlayer.getDuration()) || SONG.duration; },
+  rates(){ const a = ytReady ? ytPlayer.getAvailablePlaybackRates() : [0.5, 0.75, 1]; const r = a.filter(x => x >= 0.5 && x <= 1); return r.length ? r : [1]; },
+  setRate(r){ ytReady && ytPlayer.setPlaybackRate(r); },
+  setVol(v){ ytReady && ytPlayer.setVolume(Math.round(v * 100)); }
+};
+let T = null;  // active transport
+
+// local sources (best first, m4a fallback)
+(function(){
+  const srcs = SONG.audio;
+  srcs.forEach((s, i) => {
+    const el = document.createElement('source'); el.src = s.src; el.type = s.type;
+    el.addEventListener('error', () => { if (i === srcs.length - 1) localFailed(); });
+    audio.appendChild(el);
+  });
+  audio.addEventListener('loadedmetadata', () => { local.ok = true; $('mLocal').disabled = false; if (!T) setMode('local', true); updateNote(); });
+  audio.addEventListener('ended', () => updatePlayBtn());
+  audio.addEventListener('play', updatePlayBtn); audio.addEventListener('pause', updatePlayBtn);
+  if (!srcs.length) { setTimeout(localFailed, 0); return; }
+  audio.load();
+  setTimeout(() => { if (local.ok === null && audio.networkState === 3) localFailed(); }, 1500);
+})();
+function localFailed(){ if (local.ok) return; local.ok = false; $('mLocal').disabled = true; $('mLocal').title = 'Local audio file not found next to this page'; if (!T || T === local) setMode('yt', true); }
+
+function loadYT(){
+  if (ytPlayer || ytApiLoading) return;
+  ytApiLoading = true;
+  window.onYouTubeIframeAPIReady = () => {
+    const pv = {playsinline: 1, rel: 0, modestbranding: 1, controls: 1, disablekb: 1};
+    if (location.protocol.startsWith('http')) pv.origin = location.origin;
+    ytPlayer = new YT.Player('yt', {width: '100%', height: '100%', videoId: SONG.videoId, playerVars: pv, events: {
+      onReady: () => { ytReady = true; if (T === yt){ fillSpeed(); yt.setVol($('vol').value / 100); if (pendingSeek !== null){ const ps = pendingSeek; pendingSeek = null; yt.seek(ps); } } updateNote(); },
+      onStateChange: e => { if (e.data === 1 && ytPending !== null){ const t = ytPending; ytPending = null; if (Math.abs(ytPlayer.getCurrentTime() - t) > 0.5) ytPlayer.seekTo(t, true); } updatePlayBtn(); },
+      onPlaybackRateChange: () => { if (T === yt) syncSpeedUI(); },
+      onError: e => { $('note').textContent = 'YouTube player error ' + e.data + (location.protocol === 'file:' ? ' — YouTube embeds need the page served over http(s)' : ''); }
+    }});
+  };
+  const s = document.createElement('script'); s.src = 'https://www.youtube.com/iframe_api';
+  s.onerror = () => { $('note').textContent = 'Could not load the YouTube player (offline, or blocked by an extension?).'; };
+  document.head.appendChild(s);
+}
+function setMode(m, auto){
+  const next = m === 'yt' ? yt : local;
+  if (next === T) return;
+  let t = 0;
+  if (T){ t = T.time(); T.pause(); }
+  T = next;
+  $('mLocal').classList.toggle('on', T === local); $('mYT').classList.toggle('on', T === yt);
+  $('ytbox').style.display = T === yt ? 'block' : 'none';
+  if (T === yt){ loadYT(); if (ytReady){ yt.seek(t); if (ytPlayer.getPlayerState() === 1) ytPlayer.pauseVideo(); } else pendingSeek = t; }
+  else { local.seek(t); }
+  fillSpeed(); T.setVol($('vol').value / 100); updateNote(); updatePlayBtn();
+}
+function updateNote(){
+  let n = '';
+  if (T === yt && location.protocol === 'file:') n = 'Note: the YouTube player needs this page opened from a web server (http/https), not as a local file.';
+  if (T === yt && !ytReady && !n) n = 'Loading YouTube player…';
+  if (T === local && local.ok === false) n = 'Local audio not found.';
+  $('note').textContent = n;
+}
+$('mLocal').onclick = () => setMode('local'); $('mYT').onclick = () => setMode('yt');
+$('ytMini').onclick = () => $('ytbox').classList.toggle('big');
+
+// ---------- speed / volume / marker lead ----------
+let wantRate = 1;
+function fillSpeed(){
+  const sel = $('speed'); sel.innerHTML = '';
+  const rs = T.rates();
+  rs.forEach(r => { const o = document.createElement('option'); o.value = r; o.textContent = Math.round(r*100) + '%'; sel.appendChild(o); });
+  let best = rs[0]; rs.forEach(r => { if (Math.abs(r - wantRate) < Math.abs(best - wantRate)) best = r; });
+  sel.value = String(best); T.setRate(best);
+}
+function syncSpeedUI(){ const r = ytPlayer.getPlaybackRate(); if ([...$('speed').options].some(o => +o.value === r)) $('speed').value = String(r); }
+$('speed').onchange = e => { wantRate = +e.target.value; T.setRate(wantRate); };
+$('vol').oninput = e => T && T.setVol(e.target.value / 100);
+// offset (ms) of the marker relative to the audio downbeats; negative = marker moves BEFORE the chord is played
+const DEF_OFFSET = (typeof SONG.defaultOffsetMs === 'number') ? SONG.defaultOffsetMs : -1000;
+const LS_KEY = 'gi-lead-' + SONG.videoId;
+let offset = DEF_OFFSET;
+try { const v = localStorage.getItem(LS_KEY); if (v !== null && v !== '' && isFinite(+v)) offset = +v; } catch(e){}
+function leadLabel(v){ return v < 0 ? (-v/1000).toFixed(2).replace(/0$/, '') + ' s before the beat' : v > 0 ? (v/1000).toFixed(2).replace(/0$/, '') + ' s after the beat' : 'on the beat'; }
+function setOffset(v, save){
+  offset = v; $('offs').value = v; $('offsv').textContent = leadLabel(v); lastIdx = -2; drawLoop();
+  if (save){ try { if (v === DEF_OFFSET) localStorage.removeItem(LS_KEY); else localStorage.setItem(LS_KEY, v); } catch(_){} }
+}
+$('offs').oninput = e => setOffset(+e.target.value, true);
+$('offsReset').onclick = () => setOffset(DEF_OFFSET, true);
+
+// ---------- transport controls ----------
+function toggle(){ if (!T) return; if (T.playing()) T.pause(); else { const p = T.play(); if (p && p.catch) p.catch(() => {}); } setTimeout(updatePlayBtn, 50); }
+function updatePlayBtn(){ $('play').textContent = (T && T.playing()) ? '❚❚ Pause' : '▶ Play'; }
+$('play').onclick = toggle;
+const lead = () => offset / 1000;                    // seconds (negative = ahead)
+const markT = () => T.time() - lead();               // time on the marker timeline
+const seekToChord = t0 => T.seek(t0 + lead() + 0.001);  // marker lands on the chord, audio reaches its downbeat |lead| s later
+function jumpBar(dir){
+  const t = markT(), v = visitAt(t);
+  let i = v ? visits.indexOf(v) : -1;
+  if (!(dir < 0 && v && t - v.t0 > 0.6)) i += dir;
+  i = Math.max(0, Math.min(visits.length - 1, i));
+  if (i >= 0) seekToChord(visits[i].t0);
+}
+$('prev').onclick = () => jumpBar(-1); $('next').onclick = () => jumpBar(1);
+let seeking = false;
+$('seek').addEventListener('input', e => { seeking = true; const t = e.target.value / 1000 * T.dur(); $('time').textContent = fmt(t) + ' / ' + fmt(T.dur()); });
+$('seek').addEventListener('change', e => { T.seek(e.target.value / 1000 * T.dur()); seeking = false; });
+function fmt(t){ t = Math.max(0, t || 0); const m = Math.floor(t / 60), s = Math.floor(t % 60); return m + ':' + String(s).padStart(2, '0'); }
+
+// ---------- click cell / loop (loops are defined on audio downbeats, not shifted by the lead) ----------
+let loop = {a: null, b: null, on: false}, pick = 0, pickA = null;
+function nextStart(s, c, part, after){
+  const k = key(s, c), cand = [];
+  E.forEach((e, i) => {
+    if (key(e[1], e[2]) !== k) return;
+    const prevSame = i > 0 && key(E[i-1][1], E[i-1][2]) === k;
+    if (part === null || !hasParts[k]) { if (!prevSame) cand.push(e[0]); }
+    else if (e[3] === part || (e[3] === null && part === 0 && !prevSame)) cand.push(e[0]);
+  });
+  if (!cand.length) return null;
+  return cand.find(x => x > after + 0.05) ?? cand[0];
+}
+function onCellClick(s, c, part, ev){
+  const t = markT();
+  if (pick || ev.shiftKey){
+    if (pick !== 2 && !(ev.shiftKey && pickA !== null)){
+      const st = nextStart(s, c, null, t - 0.1); if (st === null) return;
+      pickA = st; pick = 2; $('hint').textContent = 'Loop: now click the LAST cell of the passage';
+      setLoop(st, null, false); return;
+    }
+    const k = key(s, c), v = visits.find(v => v.k === k && v.t0 >= pickA - 0.01);
+    if (!v){ $('hint').textContent = 'That cell does not come after the start; pick again'; return; }
+    setLoop(pickA, v.t1, true); pick = 0; pickA = null; $('loopCells').classList.remove('on'); $('hint').textContent = '';
+    seekToChord(loop.a); return;
+  }
+  const st = nextStart(s, c, part, t);
+  if (st !== null) seekToChord(st);
+}
+$('loopCells').onclick = () => {
+  if (pick){ pick = 0; pickA = null; $('loopCells').classList.remove('on'); $('hint').textContent = ''; return; }
+  pick = 1; $('loopCells').classList.add('on'); $('hint').textContent = 'Loop: click the FIRST cell of the passage (tip: shift-click also works)';
+};
+function setLoop(a, b, on){
+  loop.a = a; loop.b = b; loop.on = !!(on && a !== null && b !== null && b > a);
+  $('loopOn').textContent = loop.on ? 'Loop on' : 'Loop off'; $('loopOn').classList.toggle('on', loop.on);
+  drawLoop();
+}
+function drawLoop(){
+  const lc = $('loopcells'); if (!lc) return; lc.innerHTML = '';
+  const bar = $('loopbar'), D = (T && T.dur()) || SONG.duration;
+  ['bA', 'bB'].forEach(id => $(id).style.display = 'none');
+  if (loop.a === null) { bar.style.display = 'none'; return; }
+  const b = loop.b === null ? loop.a + 0.01 : loop.b;
+  bar.style.display = 'block'; bar.style.left = pct(loop.a / D); bar.style.width = pct(Math.max(0.002, (b - loop.a) / D));
+  const va = visitAt(loop.a + 0.001), vb = loop.b !== null ? visitAt(loop.b - 0.001) : null;
+  visits.forEach(v => { if (v.c >= 0 && v.sc === curScreen && v.t0 >= loop.a - 0.001 && v.t1 <= b + 0.001){ const d = document.createElement('div'); d.className = 'loopcell'; place(d, SCR[v.sc].cells[v.c]); lc.appendChild(d); } });
+  if (va && va.c >= 0 && va.sc === curScreen){ const r = SCR[va.sc].cells[va.c], el = $('bA'); el.style.left = pct(r[0]); el.style.top = pct(r[1]); el.style.display = 'block'; }
+  if (vb && vb.c >= 0 && vb.sc === curScreen){ const r = SCR[vb.sc].cells[vb.c], el = $('bB'); el.style.left = pct(r[0] + r[2] - 0.012); el.style.top = pct(r[1]); el.style.display = 'block'; }
+}
+$('setA').onclick = () => { const t = markT(), v = visitAt(t); const a = (v && v.c >= 0) ? v.t0 : t; setLoop(a, loop.b !== null && loop.b > a ? loop.b : null, loop.b !== null && loop.b > a); };
+$('setB').onclick = () => { const t = markT(), v = visitAt(t); const b = (v && v.c >= 0) ? v.t1 : t; if (loop.a === null || b <= loop.a) { $('hint').textContent = 'Set A first (B must be after A)'; return; } $('hint').textContent = ''; setLoop(loop.a, b, true); };
+$('loopOn').onclick = () => { if (loop.a !== null && loop.b !== null) setLoop(loop.a, loop.b, !loop.on); };
+$('loopClr').onclick = () => { setLoop(null, null, false); pick = 0; pickA = null; $('loopCells').classList.remove('on'); $('hint').textContent = ''; };
+
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'SELECT' || e.metaKey || e.ctrlKey) return;
+  if (e.code === 'Space'){ e.preventDefault(); if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); toggle(); }
+  else if (e.code === 'ArrowRight' && e.target.type !== 'range'){ e.preventDefault(); jumpBar(1); }
+  else if (e.code === 'ArrowLeft' && e.target.type !== 'range'){ e.preventDefault(); jumpBar(-1); }
+  else if (e.key === '[') $('setA').click();
+  else if (e.key === ']') $('setB').click();
+  else if (e.key === 'l' || e.key === 'L') $('loopOn').click();
+  else if (e.key === 'Escape') { if (pick) $('loopCells').click(); }
+});
+
+// ---------- render loop ----------
+const hl = $('hl');
+let lastIdx = -2, lastLoopSeek = 0;
+const firstBarT = (E.find(e => e[2] >= 0) || [0])[0];
+function counterText(i, t){
+  if (i < 0 || E[i][2] < 0) return t < firstBarT ? "Count-in" : "—";
+  const e = E[i], ch = e[4], bar = e[5];
+  if (!nChorus) return 'Bar ' + bar;
+  if (ch === 0) return 'Intro · Bar ' + bar;
+  const tag = ch > nChorus ? 'Ending' : ('Chorus ' + ch + ' / ' + nChorus);
+  return tag + ' · Bar ' + bar + ' / ' + nForm;
+}
+function frame(){
+  if (T){
+    const now = performance.now();
+    const raw = T.time();
+    if (loop.on && T.playing() && raw >= loop.b && now - lastLoopSeek > 250){ T.seek(loop.a); lastLoopSeek = now; }
+    let t = raw - lead();
+    // with a lead, show the loop start ahead of the jump back instead of the bar after the loop
+    if (loop.on && t >= loop.b && raw < loop.b + 0.05) t -= (loop.b - loop.a);
+    const i = idxAt(t);
+    const sc = (i >= 0 && E[i][2] >= 0) ? E[i][1] : screenAt(t);
+    if (sc !== curScreen) { showScreen(sc); lastIdx = -2; }
+    if (i !== lastIdx){
+      lastIdx = i;
+      if (i >= 0 && E[i][2] >= 0){ place(hl, partRect(E[i][1], E[i][2], E[i][3])); hl.style.display = 'block'; }
+      else hl.style.display = 'none';
+      $('counter').textContent = counterText(i, t);
+    }
+    if (!seeking){ const D = T.dur(); $('seek').value = Math.round(raw / D * 1000); $('time').textContent = fmt(raw) + ' / ' + fmt(D); }
+  }
+  requestAnimationFrame(frame);
+}
+showScreen(screenAt(0));
+setOffset(offset, false);
+requestAnimationFrame(frame);
+window.__player = {get T(){ return T; }, setMode, loop, E, visits, local, yt, idxAt, get ytReady(){ return ytReady; }, get offset(){ return offset; }, get curScreen(){ return curScreen; }};
+})();
+
+</script>
+</body>
+</html>

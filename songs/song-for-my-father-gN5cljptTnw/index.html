@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect x=%221%22 y=%224%22 width=%2214%22 height=%228%22 rx=%221%22 fill=%22%23ffc83c%22/%3E%3C/svg%3E">
+<meta name="description" content="Song For My Father: play along with Martin Gioani's backing track (guitare-improvisation.com) — the original YouTube video with the chord chart, a moving bar marker, click-to-jump, loop and slow-down.">
+<title>Song For My Father — chord-chart play-along (backing track by Martin Gioani)</title>
+<style>
+:root{--bg:#000;--panel:#0d0d0d;--line:#2a2a2a;--txt:#d8d8d8;--dim:#8a8a8a;--acc:#ffc83c;--loop:#3fa9f5}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--txt);font:14px/1.35 -apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif}
+header{display:flex;align-items:center;gap:12px;padding:6px 12px;border-bottom:1px solid #151515;flex-wrap:wrap}
+header h1{font-size:16px;font-weight:400;margin:0;letter-spacing:.3px}
+header .meta{color:var(--dim);font-size:12px}
+header a{color:var(--dim)}
+.spacer{flex:1}
+.seg{display:inline-flex;border:1px solid #333;border-radius:6px;overflow:hidden}
+.seg button{border:0;border-radius:0;margin:0;background:#111;color:var(--dim);padding:5px 10px}
+.seg button.on{background:#2b2b2b;color:#fff}
+.seg button:disabled{opacity:.35}
+#stage{position:relative;margin:0 auto;width:min(100%, calc((100vh - 300px) * 1.77778));aspect-ratio:1920 / 1080;user-select:none;-webkit-user-select:none}
+#chart{display:block;width:100%;height:100%}
+.cell{position:absolute;cursor:pointer;border-radius:2px}
+.cell:hover{outline:1px solid rgba(255,255,255,.25)}
+#hl{position:absolute;pointer-events:none;background:rgba(255,200,60,.22);border:2px solid rgba(255,200,60,.85);border-radius:3px;box-shadow:0 0 18px rgba(255,200,60,.35);display:none}
+.badge{position:absolute;pointer-events:none;font:bold 11px/1 sans-serif;color:#000;background:var(--loop);padding:2px 4px;border-radius:3px;display:none}
+.loopcell{position:absolute;pointer-events:none;border:1px dashed rgba(63,169,245,.8);border-radius:2px}
+#ctl{flex:1;min-width:0;padding:6px 0 2px}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:4px 0}
+button,select{background:#161616;color:var(--txt);border:1px solid #333;border-radius:5px;padding:5px 9px;font:inherit;cursor:pointer}
+button:hover{border-color:#555}
+button.on{background:#123247;border-color:var(--loop);color:#fff}
+#play{min-width:74px;font-weight:600}
+input[type=range]{accent-color:var(--acc)}
+#seekwrap{position:relative;flex:1;min-width:200px;display:flex;align-items:center}
+#seek{width:100%}
+#loopbar{position:absolute;height:4px;top:50%;margin-top:6px;background:var(--loop);opacity:.8;display:none;pointer-events:none}
+.time{font-variant-numeric:tabular-nums;color:var(--dim);min-width:92px;text-align:right}
+#counter{font-variant-numeric:tabular-nums;color:#fff;min-width:210px}
+.lbl{color:var(--dim);font-size:12px}
+#hint{color:var(--loop);font-size:12px}
+#note{color:#e0a040;font-size:12px}
+#ctlwrap{display:flex;gap:10px;align-items:flex-start;max-width:1400px;margin:0 auto;padding:0 12px}
+#ytbox{flex:none;background:#111;border:1px solid #333;border-radius:6px;padding:4px;margin-top:6px;display:none}
+#ytbox .bar{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--dim);padding:0 2px 3px}
+#ytbox .bar button{padding:0 6px;font-size:11px}
+#ytwrap{width:356px;height:200px;transition:all .2s}
+#ytbox.big #ytwrap{width:480px;height:270px}
+footer{text-align:center;color:#6d6d6d;font-size:11px;padding:6px 0 10px}
+footer a{color:#8d8d8d}
+kbd{border:1px solid #444;border-radius:3px;padding:0 3px;font-size:11px;color:var(--dim)}
+.credit{background:#15120a;border-bottom:1px solid #3a3018;color:#e8d9b0;font-size:13px;padding:5px 12px;text-align:center}
+.credit a{color:#ffc83c} .back{color:#ffc83c!important;text-decoration:none;font-size:13px;border:1px solid #3a3018;border-radius:5px;padding:3px 8px}
+.about{max-width:900px;margin:4px auto 0;color:#7d7d7d;font-size:11px;line-height:1.45}
+</style>
+</head>
+<body>
+<header>
+  <a class="back" href="../../index.html" title="All songs">← All songs</a>
+  <h1>Song For My Father</h1>
+  <span class="meta" id="meta"></span>
+  <span class="spacer"></span>
+  <span class="lbl">Audio: original YouTube video</span>
+  <span class="seg" id="modeSeg" style="display:none"><button id="mLocal" title="Offline: bundled audio files">Local audio</button><button id="mYT" title="Stream from the original YouTube video (needs internet + http(s) page)">YouTube</button></span>
+</header>
+<div class="credit">Backing tracks and charts by <b>Martin Gioani</b> — <a href="https://www.guitare-improvisation.com" target="_blank" rel="noopener">guitare-improvisation.com</a> (<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener">CC BY-NC-ND</a>) · <a href="https://www.youtube.com/@guitareimprovisation" target="_blank" rel="noopener">YouTube channel</a> · Original video: <a href="https://www.youtube.com/watch?v=gN5cljptTnw" target="_blank" rel="noopener">Song For My Father - A section (Latin Jazz feel) 110 bpm : Backing Track</a></div>
+
+<div id="stage">
+  <img id="chart" alt="Chord chart" draggable="false">
+  <div id="cells"></div>
+  <div id="loopcells"></div>
+  <div id="hl"></div>
+  <div class="badge" id="bA">A</div><div class="badge" id="bB">B</div>
+</div>
+
+<div id="ctlwrap">
+<div id="ctl">
+  <div class="row">
+    <button id="play" title="Play / pause (space)">▶ Play</button>
+    <button id="prev" title="Previous bar (←)">⏮</button>
+    <button id="next" title="Next bar (→)">⏭</button>
+    <div id="seekwrap"><input type="range" id="seek" min="0" max="1000" step="1" value="0"><div id="loopbar"></div></div>
+    <span class="time" id="time">0:00 / 0:00</span>
+  </div>
+  <div class="row">
+    <span id="counter">—</span>
+    <span class="spacer"></span>
+    <span class="lbl">Loop</span>
+    <button id="setA" title="Set loop start at current bar ([)">A</button>
+    <button id="setB" title="Set loop end at end of current bar (])">B</button>
+    <button id="loopCells" title="Then click the first and the last cell of the passage">Loop cells…</button>
+    <button id="loopOn" title="Loop on/off (L)">Loop off</button>
+    <button id="loopClr" title="Clear loop">✕</button>
+    <span class="lbl">Speed</span>
+    <select id="speed" title="Pitch is preserved"></select>
+    <span class="lbl">Vol</span>
+    <input type="range" id="vol" min="0" max="100" value="90" style="width:90px">
+    <span class="lbl">Marker lead</span>
+    <input type="range" id="offs" min="-2000" max="500" step="50" value="-1000" style="width:110px" title="How far ahead of the beat the marker moves to the next chord">
+    <span class="lbl" id="offsv" style="min-width:120px">1.0 s before the beat</span>
+    <button id="offsReset" title="Back to the default (1 s before the beat)" style="padding:2px 6px">↺</button>
+  </div>
+  <div class="row"><span id="hint"></span><span id="note"></span><span class="spacer"></span>
+    <span class="lbl"><kbd>space</kbd> play/pause · <kbd>←</kbd><kbd>→</kbd> bar · click a cell = jump to it · <kbd>[</kbd><kbd>]</kbd> A/B · <kbd>L</kbd> loop</span></div>
+</div>
+
+<div id="ytbox"><div class="bar"><span>Original video (YouTube)</span><button id="ytMini" title="Enlarge / shrink">▭</button></div><div id="ytwrap"><div id="yt"></div></div></div>
+</div>
+
+<footer>Backing track and chart by Martin Gioani — <a href="https://www.guitare-improvisation.com" target="_blank" rel="noopener">guitare-improvisation.com</a> (<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener">CC BY-NC-ND 4.0</a>) · <a id="vlink" target="_blank" rel="noopener">original video</a> · <a href="https://www.youtube.com/@guitareimprovisation" target="_blank" rel="noopener">channel</a> · <span id="tsrc"></span><div class="about"><b>About:</b> A free, non-commercial practice tool. It plays the <b>original YouTube videos</b> from Martin Gioani's channel (no audio or video is re-hosted here) next to his <b>original, unmodified</b> chord charts, with a marker that moves to each chord 1 s before it is played. Not affiliated with or endorsed by guitare-improvisation.com; all credit for the backing tracks and charts goes to Martin Gioani. If you like them, subscribe to the channel and visit the website. <a href="../../index.html#about">More</a></div></footer>
+
+<audio id="audio" preload="none"></audio>
+
+<script>
+const SONG = {"title":"Song For My Father","videoTitle":"Song For My Father - A section (Latin Jazz feel) 110 bpm : Backing Track","videoId":"gN5cljptTnw","url":"https://www.youtube.com/watch?v=gN5cljptTnw","bpm":110,"key":"","formLabel":"8-bar form","formBars":8,"choruses":18,"duration":326.581,"estimated":false,"defaultOffsetMs":-1000,"screens":[{"image":"chart.png","W":1920,"H":1080,"cells":[[0.16042,0.37685,0.16979,0.14537],[0.33021,0.37685,0.16927,0.14537],[0.49948,0.37685,0.16927,0.14537],[0.66875,0.37685,0.16979,0.14537],[0.29531,0.67778,0.10208,0.08889],[0.3974,0.67778,0.10208,0.08889],[0.49948,0.67778,0.10208,0.08889],[0.60156,0.67778,0.10208,0.08889],[0.29531,0.76667,0.10208,0.08796],[0.3974,0.76667,0.10208,0.08796],[0.49948,0.76667,0.10208,0.08796],[0.60156,0.76667,0.10208,0.08796]]},{"image":"chart-2-captured.png","W":1920,"H":1080,"cells":[[0.18906,0.42315,0.15521,0.13426],[0.34427,0.42315,0.15521,0.13426],[0.49948,0.42315,0.15521,0.13426],[0.65469,0.42315,0.15521,0.13426],[0.18906,0.55741,0.15521,0.13426],[0.34427,0.55741,0.15521,0.13426],[0.49948,0.55741,0.15521,0.13426],[0.65469,0.55741,0.15521,0.13426]]}],"screenTimes":[[0.0,0],[14.0,1]],"events":[[0.005,0,-1,null,0,0],[5.535,0,0,null,0,1],[7.729,0,1,null,0,2],[9.912,0,2,null,0,3],[12.094,0,3,null,0,4],[12.459,0,3,1,0,4],[13.219,0,-1,null,0,0],[14.019,1,-1,null,0,0],[14.265,1,0,null,1,1],[16.46,1,1,null,1,2],[18.642,1,2,null,1,3],[20.825,1,3,null,1,4],[23.008,1,4,null,1,5],[25.179,1,5,null,1,6],[27.361,1,6,null,1,7],[29.544,1,7,null,1,8],[31.738,1,0,null,2,1],[33.921,1,1,null,2,2],[36.092,1,2,null,2,3],[38.275,1,3,null,2,4],[40.446,1,4,null,2,5],[42.628,1,5,null,2,6],[44.823,1,6,null,2,7],[47.005,1,7,null,2,8],[49.176,1,0,null,3,1],[51.371,1,1,null,3,2],[53.553,1,2,null,3,3],[55.736,1,3,null,3,4],[57.919,1,4,null,3,5],[60.09,1,5,null,3,6],[62.273,1,6,null,3,7],[64.455,1,7,null,3,8],[66.638,1,0,null,4,1],[68.821,1,1,null,4,2],[71.003,1,2,null,4,3],[73.186,1,3,null,4,4],[75.357,1,4,null,4,5],[77.54,1,5,null,4,6],[79.722,1,6,null,4,7],[81.917,1,7,null,4,8],[84.088,1,0,null,5,1],[86.282,1,1,null,5,2],[88.453,1,2,null,5,3],[90.647,1,3,null,5,4],[92.818,1,4,null,5,5],[95.001,1,5,null,5,6],[97.184,1,6,null,5,7],[99.366,1,7,null,5,8],[101.549,1,0,null,6,1],[103.732,1,1,null,6,2],[105.914,1,2,null,6,3],[108.097,1,3,null,6,4],[110.268,1,4,null,6,5],[112.451,1,5,null,6,6],[114.634,1,6,null,6,7],[116.828,1,7,null,6,8],[118.999,1,0,null,7,1],[121.182,1,1,null,7,2],[123.364,1,2,null,7,3],[125.547,1,3,null,7,4],[127.73,1,4,null,7,5],[129.901,1,5,null,7,6],[132.095,1,6,null,7,7],[134.278,1,7,null,7,8],[136.46,1,0,null,8,1],[138.643,1,1,null,8,2],[140.814,1,2,null,8,3],[143.008,1,3,null,8,4],[145.179,1,4,null,8,5],[147.362,1,5,null,8,6],[149.545,1,6,null,8,7],[151.727,1,7,null,8,8],[153.898,1,0,null,9,1],[156.093,1,1,null,9,2],[158.275,1,2,null,9,3],[160.458,1,3,null,9,4],[162.641,1,4,null,9,5],[164.812,1,5,null,9,6],[167.006,1,6,null,9,7],[169.177,1,7,null,9,8],[171.371,1,0,null,10,1],[173.554,1,1,null,10,2],[175.725,1,2,null,10,3],[177.92,1,3,null,10,4],[180.091,1,4,null,10,5],[182.273,1,5,null,10,6],[184.456,1,6,null,10,7],[186.639,1,7,null,10,8],[188.81,1,0,null,11,1],[191.004,1,1,null,11,2],[193.187,1,2,null,11,3],[195.369,1,3,null,11,4],[197.552,1,4,null,11,5],[199.723,1,5,null,11,6],[201.906,1,6,null,11,7],[204.088,1,7,null,11,8],[206.283,1,0,null,12,1],[208.465,1,1,null,12,2],[210.636,1,2,null,12,3],[212.819,1,3,null,12,4],[215.002,1,4,null,12,5],[217.173,1,5,null,12,6],[219.367,1,6,null,12,7],[221.55,1,7,null,12,8],[223.721,1,0,null,13,1],[225.915,1,1,null,13,2],[228.098,1,2,null,13,3],[230.281,1,3,null,13,4],[232.463,1,4,null,13,5],[234.634,1,5,null,13,6],[236.817,1,6,null,13,7],[239.0,1,7,null,13,8],[241.194,1,0,null,14,1],[243.377,1,1,null,14,2],[245.548,1,2,null,14,3],[247.73,1,3,null,14,4],[249.901,1,4,null,14,5],[252.084,1,5,null,14,6],[254.267,1,6,null,14,7],[256.461,1,7,null,14,8],[258.632,1,0,null,15,1],[260.826,1,1,null,15,2],[262.997,1,2,null,15,3],[265.192,1,3,null,15,4],[267.374,1,4,null,15,5],[269.545,1,5,null,15,6],[271.728,1,6,null,15,7],[273.911,1,7,null,15,8],[276.093,1,0,null,16,1],[278.276,1,1,null,16,2],[280.459,1,2,null,16,3],[282.642,1,3,null,16,4],[284.813,1,4,null,16,5],[286.995,1,5,null,16,6],[289.178,1,6,null,16,7],[291.372,1,7,null,16,8],[293.543,1,0,null,17,1],[295.738,1,1,null,17,2],[297.909,1,2,null,17,3],[300.103,1,3,null,17,4],[302.274,1,4,null,17,5],[304.445,1,5,null,17,6],[306.639,1,6,null,17,7],[308.822,1,7,null,17,8],[311.005,1,0,null,18,1],[313.187,1,1,null,18,2],[315.358,1,2,null,18,3],[317.553,1,3,null,18,4],[319.762,1,4,null,18,5],[321.925,1,5,null,18,6],[324.082,1,6,null,18,7],[326.278,1,7,null,18,8]],"audio":[]};
+</script>
+
+<script>
+(function(){
+"use strict";
+const $ = id => document.getElementById(id);
+const E = SONG.events;               // [t, screen, cell, part, chorus, bar]  (times = audio downbeats)
+const times = E.map(e => e[0]);
+const SCR = SONG.screens;            // [{image, cells:[[fx,fy,fw,fh]...]}]
+const ST = SONG.screenTimes;         // [[t, screen]...]
+const nForm = SONG.formBars, nChorus = SONG.choruses;
+$('meta').textContent = [SONG.key && ('Key ' + SONG.key), SONG.bpm && (SONG.bpm + ' bpm'), SONG.formLabel, SCR.length > 1 && (SCR.length + ' chart screens')].filter(Boolean).join(' · ');
+$('vlink').href = SONG.url; $('vlink').textContent = 'original video (' + SONG.videoId + ')';
+$('tsrc').textContent = SONG.estimated ? 'marker timing ESTIMATED from the tempo (the video has no moving highlight)' : 'marker timing tracked from the video, aligned to the audio downbeats';
+const img = $('chart');
+
+// ---------- cells / screens ----------
+const pct = v => (v * 100).toFixed(4) + '%';
+function place(el, r){ el.style.left = pct(r[0]); el.style.top = pct(r[1]); el.style.width = pct(r[2]); el.style.height = pct(r[3]); }
+function partRect(s, c, part){ const r = SCR[s].cells[c]; if (part === 0) return [r[0], r[1], r[2]/2, r[3]]; if (part === 1) return [r[0]+r[2]/2, r[1], r[2]/2, r[3]]; return r; }
+const key = (s, c) => c < 0 ? -1 : s * 1000 + c;
+const hasParts = {};
+E.forEach(e => { if (e[3] !== null && e[2] >= 0) hasParts[key(e[1], e[2])] = true; });
+let curScreen = -1;
+function showScreen(s){
+  if (s === curScreen) return;
+  curScreen = s; img.src = SCR[s].image;
+  const box = $('cells'); box.innerHTML = '';
+  SCR[s].cells.forEach((r, c) => {
+    const d = document.createElement('div'); d.className = 'cell'; place(d, r);
+    d.addEventListener('click', ev => {
+      let part = null;
+      if (hasParts[key(s, c)]) { const b = d.getBoundingClientRect(); part = (ev.clientX - b.left) > b.width/2 ? 1 : 0; }
+      onCellClick(s, c, part, ev);
+    });
+    box.appendChild(d);
+  });
+  drawLoop();
+}
+function screenAt(t){ let s = ST.length ? ST[0][1] : 0; for (const x of ST){ if (x[0] <= t) s = x[1]; else break; } return s; }
+
+// visits: contiguous stay in one cell -> {k, s(creen), c, t0, t1}
+const visits = [];
+E.forEach(e => {
+  const k = key(e[1], e[2]), last = visits[visits.length-1];
+  if (last && last.k === k) return;
+  if (last) last.t1 = e[0];
+  visits.push({k, sc: e[1], c: e[2], t0: e[0], t1: null});
+});
+if (visits.length) visits[visits.length-1].t1 = SONG.duration;
+function idxAt(t){ let lo = 0, hi = times.length - 1, r = -1; while (lo <= hi){ const m = (lo+hi) >> 1; if (times[m] <= t){ r = m; lo = m+1; } else hi = m-1; } return r; }
+function visitAt(t){ let lo = 0, hi = visits.length - 1, r = null; while (lo <= hi){ const m = (lo+hi) >> 1; if (visits[m].t0 <= t){ r = visits[m]; lo = m+1; } else hi = m-1; } return r; }
+
+// ---------- transports ----------
+const audio = $('audio');
+function setPP(a){ a.preservesPitch = true; a.mozPreservesPitch = true; a.webkitPreservesPitch = true; }
+setPP(audio);
+const local = {
+  name: 'local', ok: null,
+  play(){ return audio.play(); }, pause(){ audio.pause(); },
+  playing(){ return !audio.paused && !audio.ended; },
+  time(){ return audio.currentTime || 0; },
+  seek(t){ audio.currentTime = Math.max(0, t); },
+  dur(){ return isFinite(audio.duration) ? audio.duration : SONG.duration; },
+  rates(){ const r = []; for (let p = 50; p <= 100; p += 5) r.push(p/100); return r; },
+  setRate(r){ setPP(audio); audio.playbackRate = r; audio.defaultPlaybackRate = r; },
+  setVol(v){ audio.volume = v; }
+};
+let pendingSeek = null, ytPlayer = null, ytReady = false, ytPending = null, ytApiLoading = false, ytAnchor = {rep: -1, t: 0, at: 0};
+const yt = {
+  name: 'yt',
+  play(){ ytReady && ytPlayer.playVideo(); }, pause(){ ytReady && ytPlayer.pauseVideo(); },
+  playing(){ return ytReady && ytPlayer.getPlayerState() === 1; },
+  time(){
+    if (!ytReady) return pendingSeek || 0;
+    if (ytPending !== null) return ytPending;
+    const rep = ytPlayer.getCurrentTime() || 0, now = performance.now();
+    if (rep !== ytAnchor.rep){ ytAnchor = {rep, t: rep, at: now}; }
+    if (!yt.playing()) return rep;
+    const est = ytAnchor.t + (now - ytAnchor.at) / 1000 * (ytPlayer.getPlaybackRate() || 1);
+    return Math.min(est, rep + 0.35);
+  },
+  seek(t){
+    t = Math.max(0, t);
+    if (!ytReady){ pendingSeek = t; return; }
+    const st = ytPlayer.getPlayerState();
+    if (st === -1 || st === 5){ ytPending = t; ytPlayer.cueVideoById({videoId: SONG.videoId, startSeconds: t}); }
+    else { ytPlayer.seekTo(t, true); ytPending = null; }
+    ytAnchor = {rep: -1, t, at: performance.now()};
+  },
+  dur(){ return (ytReady && ytPlayer.getDuration()) || SONG.duration; },
+  rates(){ const a = ytReady ? ytPlayer.getAvailablePlaybackRates() : [0.5, 0.75, 1]; const r = a.filter(x => x >= 0.5 && x <= 1); return r.length ? r : [1]; },
+  setRate(r){ ytReady && ytPlayer.setPlaybackRate(r); },
+  setVol(v){ ytReady && ytPlayer.setVolume(Math.round(v * 100)); }
+};
+let T = null;  // active transport
+
+// local sources (best first, m4a fallback)
+(function(){
+  const srcs = SONG.audio;
+  srcs.forEach((s, i) => {
+    const el = document.createElement('source'); el.src = s.src; el.type = s.type;
+    el.addEventListener('error', () => { if (i === srcs.length - 1) localFailed(); });
+    audio.appendChild(el);
+  });
+  audio.addEventListener('loadedmetadata', () => { local.ok = true; $('mLocal').disabled = false; if (!T) setMode('local', true); updateNote(); });
+  audio.addEventListener('ended', () => updatePlayBtn());
+  audio.addEventListener('play', updatePlayBtn); audio.addEventListener('pause', updatePlayBtn);
+  if (!srcs.length) { setTimeout(localFailed, 0); return; }
+  audio.load();
+  setTimeout(() => { if (local.ok === null && audio.networkState === 3) localFailed(); }, 1500);
+})();
+function localFailed(){ if (local.ok) return; local.ok = false; $('mLocal').disabled = true; $('mLocal').title = 'Local audio file not found next to this page'; if (!T || T === local) setMode('yt', true); }
+
+function loadYT(){
+  if (ytPlayer || ytApiLoading) return;
+  ytApiLoading = true;
+  window.onYouTubeIframeAPIReady = () => {
+    const pv = {playsinline: 1, rel: 0, modestbranding: 1, controls: 1, disablekb: 1};
+    if (location.protocol.startsWith('http')) pv.origin = location.origin;
+    ytPlayer = new YT.Player('yt', {width: '100%', height: '100%', videoId: SONG.videoId, playerVars: pv, events: {
+      onReady: () => { ytReady = true; if (T === yt){ fillSpeed(); yt.setVol($('vol').value / 100); if (pendingSeek !== null){ const ps = pendingSeek; pendingSeek = null; yt.seek(ps); } } updateNote(); },
+      onStateChange: e => { if (e.data === 1 && ytPending !== null){ const t = ytPending; ytPending = null; if (Math.abs(ytPlayer.getCurrentTime() - t) > 0.5) ytPlayer.seekTo(t, true); } updatePlayBtn(); },
+      onPlaybackRateChange: () => { if (T === yt) syncSpeedUI(); },
+      onError: e => { $('note').textContent = 'YouTube player error ' + e.data + (location.protocol === 'file:' ? ' — YouTube embeds need the page served over http(s)' : ''); }
+    }});
+  };
+  const s = document.createElement('script'); s.src = 'https://www.youtube.com/iframe_api';
+  s.onerror = () => { $('note').textContent = 'Could not load the YouTube player (offline, or blocked by an extension?).'; };
+  document.head.appendChild(s);
+}
+function setMode(m, auto){
+  const next = m === 'yt' ? yt : local;
+  if (next === T) return;
+  let t = 0;
+  if (T){ t = T.time(); T.pause(); }
+  T = next;
+  $('mLocal').classList.toggle('on', T === local); $('mYT').classList.toggle('on', T === yt);
+  $('ytbox').style.display = T === yt ? 'block' : 'none';
+  if (T === yt){ loadYT(); if (ytReady){ yt.seek(t); if (ytPlayer.getPlayerState() === 1) ytPlayer.pauseVideo(); } else pendingSeek = t; }
+  else { local.seek(t); }
+  fillSpeed(); T.setVol($('vol').value / 100); updateNote(); updatePlayBtn();
+}
+function updateNote(){
+  let n = '';
+  if (T === yt && location.protocol === 'file:') n = 'Note: the YouTube player needs this page opened from a web server (http/https), not as a local file.';
+  if (T === yt && !ytReady && !n) n = 'Loading YouTube player…';
+  if (T === local && local.ok === false) n = 'Local audio not found.';
+  $('note').textContent = n;
+}
+$('mLocal').onclick = () => setMode('local'); $('mYT').onclick = () => setMode('yt');
+$('ytMini').onclick = () => $('ytbox').classList.toggle('big');
+
+// ---------- speed / volume / marker lead ----------
+let wantRate = 1;
+function fillSpeed(){
+  const sel = $('speed'); sel.innerHTML = '';
+  const rs = T.rates();
+  rs.forEach(r => { const o = document.createElement('option'); o.value = r; o.textContent = Math.round(r*100) + '%'; sel.appendChild(o); });
+  let best = rs[0]; rs.forEach(r => { if (Math.abs(r - wantRate) < Math.abs(best - wantRate)) best = r; });
+  sel.value = String(best); T.setRate(best);
+}
+function syncSpeedUI(){ const r = ytPlayer.getPlaybackRate(); if ([...$('speed').options].some(o => +o.value === r)) $('speed').value = String(r); }
+$('speed').onchange = e => { wantRate = +e.target.value; T.setRate(wantRate); };
+$('vol').oninput = e => T && T.setVol(e.target.value / 100);
+// offset (ms) of the marker relative to the audio downbeats; negative = marker moves BEFORE the chord is played
+const DEF_OFFSET = (typeof SONG.defaultOffsetMs === 'number') ? SONG.defaultOffsetMs : -1000;
+const LS_KEY = 'gi-lead-' + SONG.videoId;
+let offset = DEF_OFFSET;
+try { const v = localStorage.getItem(LS_KEY); if (v !== null && v !== '' && isFinite(+v)) offset = +v; } catch(e){}
+function leadLabel(v){ return v < 0 ? (-v/1000).toFixed(2).replace(/0$/, '') + ' s before the beat' : v > 0 ? (v/1000).toFixed(2).replace(/0$/, '') + ' s after the beat' : 'on the beat'; }
+function setOffset(v, save){
+  offset = v; $('offs').value = v; $('offsv').textContent = leadLabel(v); lastIdx = -2; drawLoop();
+  if (save){ try { if (v === DEF_OFFSET) localStorage.removeItem(LS_KEY); else localStorage.setItem(LS_KEY, v); } catch(_){} }
+}
+$('offs').oninput = e => setOffset(+e.target.value, true);
+$('offsReset').onclick = () => setOffset(DEF_OFFSET, true);
+
+// ---------- transport controls ----------
+function toggle(){ if (!T) return; if (T.playing()) T.pause(); else { const p = T.play(); if (p && p.catch) p.catch(() => {}); } setTimeout(updatePlayBtn, 50); }
+function updatePlayBtn(){ $('play').textContent = (T && T.playing()) ? '❚❚ Pause' : '▶ Play'; }
+$('play').onclick = toggle;
+const lead = () => offset / 1000;                    // seconds (negative = ahead)
+const markT = () => T.time() - lead();               // time on the marker timeline
+const seekToChord = t0 => T.seek(t0 + lead() + 0.001);  // marker lands on the chord, audio reaches its downbeat |lead| s later
+function jumpBar(dir){
+  const t = markT(), v = visitAt(t);
+  let i = v ? visits.indexOf(v) : -1;
+  if (!(dir < 0 && v && t - v.t0 > 0.6)) i += dir;
+  i = Math.max(0, Math.min(visits.length - 1, i));
+  if (i >= 0) seekToChord(visits[i].t0);
+}
+$('prev').onclick = () => jumpBar(-1); $('next').onclick = () => jumpBar(1);
+let seeking = false;
+$('seek').addEventListener('input', e => { seeking = true; const t = e.target.value / 1000 * T.dur(); $('time').textContent = fmt(t) + ' / ' + fmt(T.dur()); });
+$('seek').addEventListener('change', e => { T.seek(e.target.value / 1000 * T.dur()); seeking = false; });
+function fmt(t){ t = Math.max(0, t || 0); const m = Math.floor(t / 60), s = Math.floor(t % 60); return m + ':' + String(s).padStart(2, '0'); }
+
+// ---------- click cell / loop (loops are defined on audio downbeats, not shifted by the lead) ----------
+let loop = {a: null, b: null, on: false}, pick = 0, pickA = null;
+function nextStart(s, c, part, after){
+  const k = key(s, c), cand = [];
+  E.forEach((e, i) => {
+    if (key(e[1], e[2]) !== k) return;
+    const prevSame = i > 0 && key(E[i-1][1], E[i-1][2]) === k;
+    if (part === null || !hasParts[k]) { if (!prevSame) cand.push(e[0]); }
+    else if (e[3] === part || (e[3] === null && part === 0 && !prevSame)) cand.push(e[0]);
+  });
+  if (!cand.length) return null;
+  return cand.find(x => x > after + 0.05) ?? cand[0];
+}
+function onCellClick(s, c, part, ev){
+  const t = markT();
+  if (pick || ev.shiftKey){
+    if (pick !== 2 && !(ev.shiftKey && pickA !== null)){
+      const st = nextStart(s, c, null, t - 0.1); if (st === null) return;
+      pickA = st; pick = 2; $('hint').textContent = 'Loop: now click the LAST cell of the passage';
+      setLoop(st, null, false); return;
+    }
+    const k = key(s, c), v = visits.find(v => v.k === k && v.t0 >= pickA - 0.01);
+    if (!v){ $('hint').textContent = 'That cell does not come after the start; pick again'; return; }
+    setLoop(pickA, v.t1, true); pick = 0; pickA = null; $('loopCells').classList.remove('on'); $('hint').textContent = '';
+    seekToChord(loop.a); return;
+  }
+  const st = nextStart(s, c, part, t);
+  if (st !== null) seekToChord(st);
+}
+$('loopCells').onclick = () => {
+  if (pick){ pick = 0; pickA = null; $('loopCells').classList.remove('on'); $('hint').textContent = ''; return; }
+  pick = 1; $('loopCells').classList.add('on'); $('hint').textContent = 'Loop: click the FIRST cell of the passage (tip: shift-click also works)';
+};
+function setLoop(a, b, on){
+  loop.a = a; loop.b = b; loop.on = !!(on && a !== null && b !== null && b > a);
+  $('loopOn').textContent = loop.on ? 'Loop on' : 'Loop off'; $('loopOn').classList.toggle('on', loop.on);
+  drawLoop();
+}
+function drawLoop(){
+  const lc = $('loopcells'); if (!lc) return; lc.innerHTML = '';
+  const bar = $('loopbar'), D = (T && T.dur()) || SONG.duration;
+  ['bA', 'bB'].forEach(id => $(id).style.display = 'none');
+  if (loop.a === null) { bar.style.display = 'none'; return; }
+  const b = loop.b === null ? loop.a + 0.01 : loop.b;
+  bar.style.display = 'block'; bar.style.left = pct(loop.a / D); bar.style.width = pct(Math.max(0.002, (b - loop.a) / D));
+  const va = visitAt(loop.a + 0.001), vb = loop.b !== null ? visitAt(loop.b - 0.001) : null;
+  visits.forEach(v => { if (v.c >= 0 && v.sc === curScreen && v.t0 >= loop.a - 0.001 && v.t1 <= b + 0.001){ const d = document.createElement('div'); d.className = 'loopcell'; place(d, SCR[v.sc].cells[v.c]); lc.appendChild(d); } });
+  if (va && va.c >= 0 && va.sc === curScreen){ const r = SCR[va.sc].cells[va.c], el = $('bA'); el.style.left = pct(r[0]); el.style.top = pct(r[1]); el.style.display = 'block'; }
+  if (vb && vb.c >= 0 && vb.sc === curScreen){ const r = SCR[vb.sc].cells[vb.c], el = $('bB'); el.style.left = pct(r[0] + r[2] - 0.012); el.style.top = pct(r[1]); el.style.display = 'block'; }
+}
+$('setA').onclick = () => { const t = markT(), v = visitAt(t); const a = (v && v.c >= 0) ? v.t0 : t; setLoop(a, loop.b !== null && loop.b > a ? loop.b : null, loop.b !== null && loop.b > a); };
+$('setB').onclick = () => { const t = markT(), v = visitAt(t); const b = (v && v.c >= 0) ? v.t1 : t; if (loop.a === null || b <= loop.a) { $('hint').textContent = 'Set A first (B must be after A)'; return; } $('hint').textContent = ''; setLoop(loop.a, b, true); };
+$('loopOn').onclick = () => { if (loop.a !== null && loop.b !== null) setLoop(loop.a, loop.b, !loop.on); };
+$('loopClr').onclick = () => { setLoop(null, null, false); pick = 0; pickA = null; $('loopCells').classList.remove('on'); $('hint').textContent = ''; };
+
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'SELECT' || e.metaKey || e.ctrlKey) return;
+  if (e.code === 'Space'){ e.preventDefault(); if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); toggle(); }
+  else if (e.code === 'ArrowRight' && e.target.type !== 'range'){ e.preventDefault(); jumpBar(1); }
+  else if (e.code === 'ArrowLeft' && e.target.type !== 'range'){ e.preventDefault(); jumpBar(-1); }
+  else if (e.key === '[') $('setA').click();
+  else if (e.key === ']') $('setB').click();
+  else if (e.key === 'l' || e.key === 'L') $('loopOn').click();
+  else if (e.key === 'Escape') { if (pick) $('loopCells').click(); }
+});
+
+// ---------- render loop ----------
+const hl = $('hl');
+let lastIdx = -2, lastLoopSeek = 0;
+const firstBarT = (E.find(e => e[2] >= 0) || [0])[0];
+function counterText(i, t){
+  if (i < 0 || E[i][2] < 0) return t < firstBarT ? "Count-in" : "—";
+  const e = E[i], ch = e[4], bar = e[5];
+  if (!nChorus) return 'Bar ' + bar;
+  if (ch === 0) return 'Intro · Bar ' + bar;
+  const tag = ch > nChorus ? 'Ending' : ('Chorus ' + ch + ' / ' + nChorus);
+  return tag + ' · Bar ' + bar + ' / ' + nForm;
+}
+function frame(){
+  if (T){
+    const now = performance.now();
+    const raw = T.time();
+    if (loop.on && T.playing() && raw >= loop.b && now - lastLoopSeek > 250){ T.seek(loop.a); lastLoopSeek = now; }
+    let t = raw - lead();
+    // with a lead, show the loop start ahead of the jump back instead of the bar after the loop
+    if (loop.on && t >= loop.b && raw < loop.b + 0.05) t -= (loop.b - loop.a);
+    const i = idxAt(t);
+    const sc = (i >= 0 && E[i][2] >= 0) ? E[i][1] : screenAt(t);
+    if (sc !== curScreen) { showScreen(sc); lastIdx = -2; }
+    if (i !== lastIdx){
+      lastIdx = i;
+      if (i >= 0 && E[i][2] >= 0){ place(hl, partRect(E[i][1], E[i][2], E[i][3])); hl.style.display = 'block'; }
+      else hl.style.display = 'none';
+      $('counter').textContent = counterText(i, t);
+    }
+    if (!seeking){ const D = T.dur(); $('seek').value = Math.round(raw / D * 1000); $('time').textContent = fmt(raw) + ' / ' + fmt(D); }
+  }
+  requestAnimationFrame(frame);
+}
+showScreen(screenAt(0));
+setOffset(offset, false);
+requestAnimationFrame(frame);
+window.__player = {get T(){ return T; }, setMode, loop, E, visits, local, yt, idxAt, get ytReady(){ return ytReady; }, get offset(){ return offset; }, get curScreen(){ return curScreen; }};
+})();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect x=%221%22 y=%224%22 width=%2214%22 height=%228%22 rx=%221%22 fill=%22%23ffc83c%22/%3E%3C/svg%3E">
+<title>__TITLE__ — backing tracks by Martin Gioani (guitare-improvisation.com)</title>
+<meta name="description" content="Free, non-commercial practice tool: play along with Martin Gioani's backing tracks (guitare-improvisation.com) — the original YouTube videos with the chord chart, a moving bar marker, click-to-jump, loop and slow-down.">
+<style>
+body{margin:0;background:#000;color:#d8d8d8;font:14px/1.45 -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
+a{color:#ffc83c}
+.credit{background:#15120a;border-bottom:1px solid #3a3018;color:#e8d9b0;font-size:14px;padding:7px 16px;text-align:center}
+header{position:sticky;top:0;background:#050505;border-bottom:1px solid #1c1c1c;padding:10px 16px;z-index:2}
+h1{font-weight:300;font-size:24px;margin:0 0 6px} h1 small{color:#777;font-size:14px}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input,select{background:#141414;color:#ddd;border:1px solid #333;border-radius:5px;padding:6px 8px;font:inherit}
+#q{min-width:240px;flex:1;max-width:420px}
+#count{color:#888;font-size:12px}
+main{padding:10px 16px}
+#list{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.card{background:#0b0b0b;border:1px solid #1d1d1d;border-radius:6px;overflow:hidden;text-decoration:none;color:inherit;display:block}
+.card:hover{border-color:#ffc83c}
+.card img{width:100%;aspect-ratio:16/9;display:block;background:#111;object-fit:cover}
+.card .t{padding:6px 8px 0;color:#fff;font-size:15px}
+.card .v{padding:0 8px;color:#8a8a8a;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .m{padding:3px 8px 8px;font-size:11px;color:#9a9a9a;display:flex;gap:6px;flex-wrap:wrap}
+.tag{border:1px solid #333;border-radius:3px;padding:0 4px}
+.est{border-color:#a46b1c;color:#e0a040} .flag{border-color:#6b3a3a;color:#d27f7f}
+#about{max-width:900px;margin:26px auto 8px;padding:14px 18px;border:1px solid #222;border-radius:8px;background:#080808;color:#a8a8a8}
+#about h2{font-weight:400;font-size:17px;color:#ddd;margin:0 0 6px}
+#about ul{margin:6px 0;padding-left:20px}
+footer{color:#6d6d6d;font-size:12px;padding:10px 16px 20px;text-align:center} footer a{color:#8d8d8d}
+</style></head><body>
+<div class="credit">Backing tracks and charts by <b>Martin Gioani</b> — <a href="https://www.guitare-improvisation.com" target="_blank" rel="noopener">guitare-improvisation.com</a>
+(<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener">CC BY-NC-ND</a>) ·
+<a href="https://www.youtube.com/@guitareimprovisation" target="_blank" rel="noopener">YouTube channel “Guitar Improvisation”</a></div>
+<header><h1>__TITLE__ <small>__COUNT__ backing tracks by Martin Gioani · <a href="#about">About</a></small></h1>
+<div class="bar"><input id="q" type="search" placeholder="Search title (e.g. autumn, blues, bossa)…" autofocus>
+<select id="key"><option value="">All keys</option></select>
+<select id="st"><option value="">All songs</option><option value="t">Timing tracked from the video</option><option value="e">Timing estimated</option><option value="m">Several chart screens</option></select>
+<select id="sort"><option value="t">Sort: title</option><option value="b">Sort: bpm</option></select>
+<span id="count"></span></div></header>
+<main><div id="list"></div>
+<section id="about"><h2>About</h2>
+<p>__ABOUT__</p>
+<ul>
+<li>Open a song, press <b>Play</b>: the original video plays in the small YouTube player and the chart shows where you are.
+The highlighted bar moves to each chord <b>1 second before</b> it is played (adjustable with “Marker lead”).</li>
+<li><b>Click any bar</b> to jump there · <b>Loop</b> a passage (A/B buttons or “Loop cells…”) · <b>slow down</b> to 75 % or 50 % (YouTube keeps the pitch) · keyboard: space, ←/→, [ ], L.</li>
+<li>Each song page links to the original video. Charts are shown exactly as published (licence
+<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener">CC BY-NC-ND 4.0</a>: attribution, non-commercial, no derivatives).
+Bar timings were tracked from the moving highlight in the videos and aligned to the beats in the audio; songs marked “estimated” follow the tempo only.</li>
+</ul></section></main>
+<footer>Backing tracks and charts © Martin Gioani — <a href="https://www.guitare-improvisation.com" target="_blank" rel="noopener">guitare-improvisation.com</a> ·
+<a href="https://www.youtube.com/@guitareimprovisation" target="_blank" rel="noopener">YouTube channel</a> · CC BY-NC-ND 4.0 · free, non-commercial practice tool, not affiliated with guitare-improvisation.com.</footer>
+<script>
+const SONGS = /*__SONGS__*/[];
+const KEYS = /*__KEYS__*/[];
+const $ = id => document.getElementById(id);
+KEYS.forEach(k => { const o = document.createElement('option'); o.value = o.textContent = k; $('key').appendChild(o); });
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const norm = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+SONGS.forEach(s => s._q = norm(s.t + ' ' + s.v + ' ' + s.k));
+function render(){
+  const q = norm($('q').value.trim()), k = $('key').value, st = $('st').value, so = $('sort').value;
+  let L = SONGS.filter(s => (!q || q.split(/\s+/).every(w => s._q.includes(w))) && (!k || s.k === k) &&
+    (!st || (st === 't' && !s.e) || (st === 'e' && s.e) || (st === 'm' && s.n > 1)));
+  if (so === 'b') L = L.slice().sort((a, b) => (a.b || 999) - (b.b || 999));
+  $('count').textContent = L.length + ' / ' + SONGS.length + ' songs';
+  $('list').innerHTML = L.map(s => {
+    const u = 'songs/' + encodeURIComponent(s.s) + '/';
+    const tags = [s.k && '<span class="tag">' + esc(s.k) + '</span>', s.b && '<span class="tag">' + s.b + ' bpm</span>', s.d && '<span class="tag">' + s.d + '</span>',
+      s.e && '<span class="tag est" title="No moving highlight in this video: bar timing follows the tempo">estimated</span>',
+      s.n > 1 && '<span class="tag">' + s.n + ' screens</span>',
+      s.f && '<span class="tag flag" title="' + esc(s.f) + '">sync: check</span>'].filter(Boolean).join('');
+    return '<a class="card" href="' + u + 'index.html"><img loading="lazy" src="' + u + 'thumb.jpg" alt=""><div class="t">' + esc(s.t) + '</div><div class="v" title="' + esc(s.v) + '">' + esc(s.v) + '</div><div class="m">' + tags + '</div></a>';
+  }).join('');
+}
+['q', 'key', 'st', 'sort'].forEach(id => $(id).addEventListener('input', render));
+render();
+</script>
+</body></html>
