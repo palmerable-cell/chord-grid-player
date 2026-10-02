@@ -1,1 +1,3 @@
 _tools/test_shots/
+__pycache__/
+*.pyc
