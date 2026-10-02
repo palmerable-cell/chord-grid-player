@@ -32,7 +32,7 @@ footer{color:#6d6d6d;font-size:12px;padding:10px 16px 20px;text-align:center} fo
 (<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener">CC BY-NC-ND</a>) ·
 <a href="https://www.youtube.com/@guitareimprovisation" target="_blank" rel="noopener">YouTube channel “Guitar Improvisation”</a></div>
 <header><h1>__TITLE__ <small>__COUNT__ backing tracks by Martin Gioani · <a href="#about">About</a></small></h1>
-<div class="bar"><input id="q" type="search" placeholder="Search title (e.g. autumn, blues, bossa)…" autofocus>
+<div class="bar"><span class="seg" id="langSeg" style="display:inline-flex;border:1px solid #333;border-radius:6px;overflow:hidden"><button type="button" id="langEN" style="border:0;background:#2b2b2b;color:#fff;padding:5px 10px;cursor:pointer;font:inherit">EN</button><button type="button" id="langFR" style="border:0;background:#111;color:#8a8a8a;padding:5px 10px;cursor:pointer;font:inherit">FR</button></span><input id="q" type="search" placeholder="Search title (e.g. autumn, blues, bossa)…" autofocus>
 <select id="key"><option value="">All keys</option></select>
 <select id="st"><option value="">All songs</option><option value="t">Timing tracked from the video</option><option value="e">Timing estimated</option><option value="m">Several chart screens</option></select>
 <select id="sort"><option value="t">Sort: title</option><option value="b">Sort: bpm</option></select>
@@ -40,17 +40,49 @@ footer{color:#6d6d6d;font-size:12px;padding:10px 16px 20px;text-align:center} fo
 <main><div id="list"></div>
 <section id="about"><h2>About</h2>
 <p>__ABOUT__</p>
-<ul>
-<li>Open a song, press <b>Play</b>: the original video plays in the small YouTube player and the chart shows where you are.
-The highlighted bar moves to each chord <b>1 second before</b> it is played (adjustable with “Marker lead”).</li>
-<li><b>Click any bar</b> to jump there · <b>Loop</b> a passage (A/B buttons or “Loop cells…”) · <b>slow down</b> to 75 % or 50 % (YouTube keeps the pitch) · keyboard: space, ←/→, [ ], L.</li>
-<li>Each song page links to the original video. Charts are shown exactly as published (licence
-<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener">CC BY-NC-ND 4.0</a>: attribution, non-commercial, no derivatives).
-Bar timings were tracked from the moving highlight in the videos and aligned to the beats in the audio; songs marked “estimated” follow the tempo only.</li>
+<ul id="aboutBullets">
+<li data-en="Open a song, press <b>Play</b>: the original video plays in the small YouTube player and the chart shows where you are. The highlight follows the <b>current bar</b> by default. Turn on <b>Anticipate the cell</b> if you want it ~1 s early (fine-tune with the slider)." data-fr="Ouvrez un morceau, appuyez sur <b>Lecture</b> : la vidéo YouTube d’origine joue à côté de la grille. Le surlignage suit la <b>mesure en cours</b> par défaut. Activez <b>Anticiper la case</b> pour ~1 s d’avance (réglable)."></li>
+<li data-en="<b>Click any bar</b> to jump · <b>Loop</b> a passage (A/B or “Select bars…”) · <b>Tempo</b> 50 % / 75 % / 100 % (pitch unchanged) · keyboard: space, ←/→, [ ], L. Switch <b>EN/FR</b> in the header." data-fr="<b>Cliquez une mesure</b> pour y aller · <b>Boucle</b> (A/B ou « Choisir les mesures… ») · <b>Tempo</b> 50 % / 75 % / 100 % (hauteur inchangée) · clavier : espace, ←/→, [ ], L. Langue <b>EN/FR</b> en en-tête."></li>
+<li data-en="Each song page links to the original video. Charts are shown exactly as published (licence <a href=\"https://creativecommons.org/licenses/by-nc-nd/4.0/\" target=\"_blank\" rel=\"noopener\">CC BY-NC-ND 4.0</a>). Bar timings were tracked from the video highlight and aligned to the audio; songs marked “estimated” follow tempo only." data-fr="Chaque page pointe vers la vidéo d’origine. Les grilles sont affichées telles quelles (licence <a href=\"https://creativecommons.org/licenses/by-nc-nd/4.0/\" target=\"_blank\" rel=\"noopener\">CC BY-NC-ND 4.0</a>). Les timings viennent du surlignage vidéo, calés sur l’audio ; « estimated » = tempo seul."></li>
 </ul></section></main>
 <footer>Backing tracks and charts © Martin Gioani — <a href="https://www.guitare-improvisation.com" target="_blank" rel="noopener">guitare-improvisation.com</a> ·
 <a href="https://www.youtube.com/@guitareimprovisation" target="_blank" rel="noopener">YouTube channel</a> · CC BY-NC-ND 4.0 · free, non-commercial practice tool, not affiliated with guitare-improvisation.com.</footer>
 <script>
+
+const UI = {
+  en: {q:'Search title (e.g. autumn, blues, bossa)…', allKeys:'All keys', allSongs:'All songs', tracked:'Timing tracked from the video', estimated:'Timing estimated', multi:'Several chart screens', sortTitle:'Sort: title', sortBpm:'Sort: bpm', about:'About', songs:'songs',
+    aboutTitle:'About', credit:'Backing tracks and charts by <b>Martin Gioani</b>'},
+  fr: {q:'Rechercher un titre (ex. autumn, blues, bossa)…', allKeys:'Toutes tonalités', allSongs:'Tous les morceaux', tracked:'Timing suivi depuis la vidéo', estimated:'Timing estimé', multi:'Plusieurs écrans de grille', sortTitle:'Tri : titre', sortBpm:'Tri : bpm', about:'À propos', songs:'morceaux',
+    aboutTitle:'À propos', credit:'Backing tracks et grilles par <b>Martin Gioani</b>'}
+};
+let lang = 'en';
+try { const s = localStorage.getItem('gi-lang'); if (s==='en'||s==='fr') lang=s; else if ((navigator.language||'').toLowerCase().startsWith('fr')) lang='fr'; } catch(e){}
+function applyListLang(){
+  const u = UI[lang] || UI.en;
+  $('q').placeholder = u.q;
+  const key0 = $('key').options[0]; if (key0) key0.textContent = u.allKeys;
+  const st = $('st');
+  if (st && st.options.length >= 4) {
+    st.options[0].textContent = u.allSongs;
+    st.options[1].textContent = u.tracked;
+    st.options[2].textContent = u.estimated;
+    st.options[3].textContent = u.multi;
+  }
+  const so = $('sort');
+  if (so && so.options.length >= 2) { so.options[0].textContent = u.sortTitle; so.options[1].textContent = u.sortBpm; }
+  const ab = document.querySelector('#about h2'); if (ab) ab.textContent = u.aboutTitle;
+  document.querySelectorAll('#aboutBullets li').forEach(li => { li.innerHTML = li.getAttribute('data-'+lang) || li.getAttribute('data-en') || ''; });
+  document.querySelectorAll('header h1 small a[href="#about"]').forEach(a => { a.textContent = u.about; });
+  $('langEN').style.background = lang==='en' ? '#2b2b2b' : '#111';
+  $('langEN').style.color = lang==='en' ? '#fff' : '#8a8a8a';
+  $('langFR').style.background = lang==='fr' ? '#2b2b2b' : '#111';
+  $('langFR').style.color = lang==='fr' ? '#fff' : '#8a8a8a';
+  document.documentElement.lang = lang;
+  render();
+}
+$('langEN').onclick = () => { lang='en'; try{localStorage.setItem('gi-lang','en');}catch(e){} applyListLang(); };
+$('langFR').onclick = () => { lang='fr'; try{localStorage.setItem('gi-lang','fr');}catch(e){} applyListLang(); };
+
 const SONGS = /*__SONGS__*/[];
 const KEYS = /*__KEYS__*/[];
 const $ = id => document.getElementById(id);
@@ -63,7 +95,7 @@ function render(){
   let L = SONGS.filter(s => (!q || q.split(/\s+/).every(w => s._q.includes(w))) && (!k || s.k === k) &&
     (!st || (st === 't' && !s.e) || (st === 'e' && s.e) || (st === 'm' && s.n > 1)));
   if (so === 'b') L = L.slice().sort((a, b) => (a.b || 999) - (b.b || 999));
-  $('count').textContent = L.length + ' / ' + SONGS.length + ' songs';
+  $('count').textContent = L.length + ' / ' + SONGS.length + ' ' + ((UI[lang]||UI.en).songs);
   $('list').innerHTML = L.map(s => {
     const u = 'songs/' + encodeURIComponent(s.s) + '/';
     const tags = [s.k && '<span class="tag">' + esc(s.k) + '</span>', s.b && '<span class="tag">' + s.b + ' bpm</span>', s.d && '<span class="tag">' + s.d + '</span>',
@@ -74,6 +106,6 @@ function render(){
   }).join('');
 }
 ['q', 'key', 'st', 'sort'].forEach(id => $(id).addEventListener('input', render));
-render();
+applyListLang();
 </script>
 </body></html>

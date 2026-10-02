@@ -24,9 +24,10 @@ CHANNEL = 'https://www.youtube.com/@guitareimprovisation'
 SITE = 'https://www.guitare-improvisation.com'
 LICENCE = 'https://creativecommons.org/licenses/by-nc-nd/4.0/'
 ABOUT = ('A free, non-commercial practice tool. It plays the <b>original YouTube videos</b> from Martin Gioani\'s channel '
-         '(no audio or video is re-hosted here) next to his <b>original, unmodified</b> chord charts, with a marker that moves to '
-         'each chord 1 s before it is played. Not affiliated with or endorsed by guitare-improvisation.com; all credit for the '
-         'backing tracks and charts goes to Martin Gioani. If you like them, subscribe to the channel and visit the website.')
+         '(no audio or video is re-hosted here) next to his <b>original, unmodified</b> chord charts. Highlight follows the current '
+         'bar by default; optional <b>Anticipate the cell</b> moves it ~1 s early. EN/FR UI. Not affiliated with or endorsed by '
+         'guitare-improvisation.com; all credit for the backing tracks and charts goes to Martin Gioani. If you like them, subscribe '
+         'to the channel and visit the website.')
 
 def slugify(s, vid):
     s = unicodedata.normalize('NFKD', s).encode('ascii', 'ignore').decode()
@@ -79,9 +80,9 @@ def patch_page(src_html, song, stage_margin):
     sub(r'100vh - \d+px', f'100vh - {stage_margin}px')
     sub('</style>', CSS_ADD + '</style>', literal=True)
     sub(r'<header>\s*<h1>', '<header>\n  <a class="back" href="../../index.html" title="All songs">← All songs</a>\n  <h1>')
-    sub(r'<span class="lbl">Audio source</span>\s*<span class="seg" id="modeSeg">(.*?)</span>\s*</header>',
-        lambda mm: '<span class="lbl">Audio: original YouTube video</span>\n  <span class="seg" id="modeSeg" style="display:none">' + mm.group(1) + '</span>\n</header>\n' + credit_html(data), flags=re.S)
-    sub('<span>YouTube player</span>', '<span>Original video (YouTube)</span>', literal=True)
+    sub(r'<span class="lbl"[^>]*>Audio source</span>\s*<span class="seg" id="modeSeg">(.*?)</span>\s*</header>',
+        lambda mm: '<span class="lbl" data-i18n="audioYt">Audio: original YouTube video</span>\n  <span class="seg" id="modeSeg" style="display:none">' + mm.group(1) + '</span>\n</header>\n' + credit_html(data), flags=re.S)
+    sub(r'<span([^>]*)>YouTube player</span>', r'<span\1>Original video (YouTube)</span>')
     sub(r'<footer>.*?</footer>', lambda _: (
         '<footer>Backing track and chart by Martin Gioani — '
         f'<a href="{SITE}" target="_blank" rel="noopener">guitare-improvisation.com</a> '
